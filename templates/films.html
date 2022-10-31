@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>{{ title }}</h1>
+    <h1>БАРА_БАРА</h1>
+    {#  условие должно обязательно закрываться конструкцией {% endif %} #}
+    {#  цикл так же должен закрываться конструкцией {% endfor %} #}
+    {% if country %}
+        {% for film in films %}
+            {% if country == film.country %}
+                <div onclick="location.href = '{{ url_for("get_film", film_id=film.id) }}'">
+                    <p>{{ film.name }}</p>
+                    <p>{{ film.rating }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% elif rating %}
+        {% for film in films %}
+            {% if float(rating) <= float(film.rating) %}
+                <div onclick="location.href = '{{ url_for("get_film", film_id=film.id) }}'">
+                    <p>{{ film.name }}</p>
+                    <p>{{ film.rating }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        {% for film in films %}
+            <div onclick="location.href = '{{ url_for("get_film", film_id=film.id) }}'">
+                <p>{{ film.name }}</p>
+                <p>{{ film.rating }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

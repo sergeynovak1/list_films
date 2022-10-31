@@ -1,0 +1,13 @@
+/* light-theme.css */
+body {
+  color: #222;
+  background: #fff;
+}
+a {
+  background-color: aquamarine;
+  border: 1px solid #000;
+  margin: 10px;
+  width: 200px;
+  padding: 10px;
+  color: #809fff;
+}

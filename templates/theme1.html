@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<button class="btn-toggle">Переключатель тёмной темы</button>
+<h1>Привет! Это просто заголовок</h1>
+<p>Я просто скучный текст, существующий исключительно ради данной демонстрации.</p>
+<p>А я ещё один текст, похожий на тот что выше, потому что два лучше, чем один.</p>
+<a href="#">Я ссылка, не нажимайте на меня!</a>
+<form action="{{url_for('change_mode')}}" method="post">
+    <input type="hidden" id="userInput" name="userInput">
+</form>
+{% endblock %}
+{% block script %}
+    <script>
+    const btn = document.querySelector(".btn-toggle");
+    // Выбираем таблицу стилей
+    const theme = document.querySelector("#theme-link");
+    // Отслеживаем щелчок по кнопке
+    btn.addEventListener("click", function() {
+    // Если текущий адрес содержит "light-theme.css"
+    if (theme.getAttribute("href") == "light-theme.css") {
+    // …то переключаемся на "dark-theme.css"
+        theme.href = "dark-theme.css";
+    // В противном случае…
+    } else {
+    // …переключаемся на "light-theme.css"
+        theme.href = "light-theme.css";
+  }
+});
+    </script>
+{% endblock %}

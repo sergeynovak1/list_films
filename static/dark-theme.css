@@ -1,0 +1,13 @@
+/* dark-theme.css */
+body {
+  color: #eee;
+  background: #121212;
+}
+body a {
+  background-color: aquamarine;
+  border: 1px solid #000;
+  margin: 10px;
+  width: 200px;
+  padding: 10px;
+  color: #809fff;
+}
