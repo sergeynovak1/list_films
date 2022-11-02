@@ -12,6 +12,9 @@ class Database:
         )
         self.cur = self.con.cursor()
 
+    def get_data(self):
+        pass
+
     def insert(self, query):
         self.cur.execute(query)
         self.con.commit()
@@ -39,4 +42,3 @@ class Database:
                 films += [{c_name: row[key] for key, c_name in enumerate(column_names)}]
 
         return films
-

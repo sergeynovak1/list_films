@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+    {# переменные из контекста используем с двойными фигурными скобками #}
+    <form>
+        <button id="btn" type="button" style="margin: 10px;">Сгенерировать фильм</button>
+            <div style="display:none;">
+                <p id="name"></p>
+                <p id="rating"></p>
+                <p id="country"></p>
+            </div>
+        <script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+        <script>
+            // функция, которая выполняется при клике на кнопку
+            $('#btn').on('click', function () {
+                $.ajax({
+                    url: '{{ url_for('get_random') }}', // добавляем url, откуда будем брать данные
+                    method: 'get', // указываем метод
+                    dataType: 'html', // тип данных
+                    success: function (data) {
+                        data = JSON.parse(data)
+                        $('#name').html(data['randint'][0])
+                        $('#rating').html(data['randint'][1])
+                        $('#country').html(data['randint'][2])
+                        $('div').show()
+                    }
+                })
+            })
+        </script>
+    </form>
+{% endblock %}

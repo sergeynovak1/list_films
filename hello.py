@@ -1,8 +1,8 @@
 import datetime
 import json
+import random
 
 from flask import Flask, render_template, request, make_response, session, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
 
 # инициализируем приложение
 # из документации:
@@ -11,32 +11,20 @@ from flask_sqlalchemy import SQLAlchemy
 #     application.  Once it is created it will act as a central registry for
 #     the view functions, the URL rules, template configuration and much more.
 from db_util import Database
-# функция, которая вызывается при ошибке 404
-def page_not_found (e):
-    return ("error.html")
-
 
 app = Flask(__name__)
+
 # нужно добавить секретный код - только с ним можно менять данные сессии
 app.secret_key = "111"
-# подключение ORM - SQLAlchemy
-# uri: СУБД://login:password@host:port/db_name
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://lesson:lesson@localhost:5436/lesson"
-db = SQLAlchemy(app)
-# регистрируем функцию, которая вызывается при указанной ошибке
-app.register_error_handler(404, page_not_found)
 
 # необходимо добавлять, чтобы время сессии не ограничивалось закрытием браузера
 app.permanent_session_lifetime = datetime.timedelta(days=365)
 
-# db = Database()
+# инициализация класса с методами для работы с БД
+db = Database()
 
-# класс-таблица films
-class Films(db.Model):
-    id = db.Column(db.INTEGER, primary_key=True)
-    name = db.Column(db.VARCHAR)
-    rating = db.Column(db.FLOAT)
-    country = db.Column(db.VARCHAR)
+# дальше реализуем методы, которые мы можем выполнить из браузера,
+# благодаря указанным относительным путям
 
 
 # метод для создания куки
@@ -97,17 +85,22 @@ def films_list():
 
 @app.route("/film/<int:film_id>")
 def get_film(film_id):
-    # переписываем запрос с помощью SQLAlchemy
-    # в данном случае при отсутствии указанного фильма, выходит 404 ошибка
-    film = db.get_or_404(Films, film_id)
-    return render_template("film.html", title=film.name, film=film)
+    id_films = db.execute(f"select * from films")
+    for ind in id_films:
+        if ind['id'] == film_id:
+            film = db.execute(f"select * from films where id='{film_id}'")
+            return render_template("film.html", title=film['name'], film=film)
+
+    return render_template("error.html", error="Такого фильма не существует в системе")
+
 
 @app.route('/new_film', methods=['GET'])
 def my_form():
     return render_template('new_film.html')
 @app.route('/new_film', methods=['POST'])
 def new_film():
-    id = request.form['id']
+    ids = db.execute(f'SELECT id FROM films')
+    id = ids[-1]['id'] + 1
     name = request.form['name']
     rating = request.form.get('rating')
     country = request.form['country']
@@ -126,6 +119,21 @@ def change_mode():
             resp.set_cookie('theme', 'light')
         return resp
     return render_template('theme.html')
+
+
+@app.route('/get_random', methods=['GET'])
+def get_random():
+    ids = db.execute(f'SELECT id FROM films')
+    id = ids[-1]['id']
+    idit = random.randint(0, id)
+    film = db.execute(f"select * from films where id = {idit}")
+    print(film)
+    return {'randint': [film['name'], film['rating'], film['country']]}
+
+
+@app.route('/get_film', methods=['GET'])
+def get_random_film():
+    return render_template('random_film.html')
 
 
 if __name__ == "__main__":
