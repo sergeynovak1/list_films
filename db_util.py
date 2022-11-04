@@ -6,7 +6,7 @@ class Database:
         self.con = psycopg2.connect(
             dbname="flask_db",
             user="postgres",
-            password="Millioner1000000",
+            password="",
             host="localhost",
             port=5432
         )
